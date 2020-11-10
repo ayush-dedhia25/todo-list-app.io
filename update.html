@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>Simple Json Server</title>
+   <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+   <nav>
+      <h3>My Todo List</h3>
+      <a href="/index.html">View Blog</a>
+   </nav>
+   
+   <form class="updateTodo">
+      <div class="form-group">
+         <label for="todo-name">Update Todo</label>
+         <input type="text" id="todo-name" name="updatedTodo" />
+      </div>
+      
+      <input type="submit" value="update" id="update" />
+   </form>
+   
+   <script src="./src/fontawesome-pro-kit.js"></script>
+   <script type="text/javascript" charset="utf-8">
+      const form = document.querySelector('.updateTodo');
+      const id = new URLSearchParams(window.location.search).get('id');
+      
+      form.addEventListener('submit', function (e) {
+         e.preventDefault();
+         
+         fetch(`http://localhost:3000/todos/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type' : 'application/json' },
+            body: JSON.stringify({ name: form.updatedTodo.value })
+         })
+         .then(_ => {
+            alert('Todo updated...!');
+            window.location.replace('./index.html');
+         })
+         .catch(err => alert(err))
+      });
+      
+      window.addEventListener('DOMContentLoaded', function () {
+         fetch(`http://localhost:3000/todos/${id}`)
+         .then(res => res.json())
+         .then(data => {
+            form.updatedTodo.value = data.name;
+         })
+         .catch(err => alert(err));
+      });
+   </script>
+</body>
+</html>
